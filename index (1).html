@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Inova AI // Directory of Free AI Tools</title>
+<style>
+  :root {
+    --bg: #0a0d12;
+    --panel: #111620;
+    --panel-2: #161c28;
+    --border: #1f2a3a;
+    --text: #d6e0ee;
+    --muted: #7a8aa3;
+    --accent: #3ee6c4;
+    --accent-2: #5b8cff;
+    --warn: #ffb547;
+    --radius: 12px;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    background-image:
+      linear-gradient(rgba(62,230,196,0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(62,230,196,0.035) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+  .mono { font-family: "JetBrains Mono", "Fira Code", ui-monospace, Consolas, monospace; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+  /* Header */
+  header {
+    border-bottom: 1px solid var(--border);
+    background: rgba(10,13,18,0.85);
+    backdrop-filter: blur(8px);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 0; gap: 12px; flex-wrap: wrap;
+  }
+  .logo { font-weight: 700; letter-spacing: 0.5px; font-size: 1.05rem; }
+  .logo span { color: var(--accent); }
+  .status {
+    font-size: 0.75rem; color: var(--muted);
+    display: flex; align-items: center; gap: 8px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: pulse 2s infinite; }
+  @keyframes pulse { 50% { opacity: 0.4; } }
+
+  /* Hero */
+  .hero { padding: 56px 0 28px; text-align: left; }
+  .prompt { color: var(--accent); font-size: 0.85rem; margin-bottom: 10px; }
+  h1 { font-size: clamp(1.9rem, 4vw, 2.8rem); line-height: 1.15; letter-spacing: -0.5px; }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lead { color: var(--muted); margin-top: 12px; max-width: 640px; }
+
+  /* Controls */
+  .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 24px 0 8px; }
+  .search {
+    flex: 1 1 280px; position: relative;
+  }
+  .search input {
+    width: 100%; background: var(--panel); border: 1px solid var(--border);
+    color: var(--text); padding: 12px 14px 12px 38px; border-radius: 10px;
+    font-size: 0.95rem; outline: none; font-family: inherit;
+  }
+  .search input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(62,230,196,0.15); }
+  .search::before {
+    content: "⌕"; position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    color: var(--muted); font-size: 1.1rem;
+  }
+  .toggle {
+    display: flex; align-items: center; gap: 8px; font-size: 0.88rem; color: var(--muted);
+    background: var(--panel); border: 1px solid var(--border); padding: 10px 14px; border-radius: 10px; cursor: pointer; user-select: none;
+  }
+  .toggle input { accent-color: var(--accent); }
+
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin: 16px 0 28px; }
+  .tab {
+    background: transparent; border: 1px solid var(--border); color: var(--muted);
+    padding: 8px 14px; border-radius: 999px; cursor: pointer; font-size: 0.88rem;
+    font-family: inherit; transition: all .15s;
+  }
+  .tab:hover { color: var(--text); border-color: #334155; }
+  .tab.active { color: #04110d; background: var(--accent); border-color: var(--accent); font-weight: 600; }
+  .tab .count { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; opacity: 0.7; margin-left: 4px; }
+
+  /* Section */
+  .section-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin: 8px 0 14px; color: var(--muted); font-size: 0.85rem;
+    font-family: "JetBrains Mono", monospace;
+  }
+
+  /* Grid & cards */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+  .card {
+    background: linear-gradient(180deg, var(--panel-2), var(--panel));
+    border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 18px; display: flex; flex-direction: column; gap: 12px;
+    position: relative; transition: transform .15s, border-color .15s, box-shadow .15s;
+  }
+  .card:hover { transform: translateY(-2px); border-color: rgba(62,230,196,0.45); box-shadow: 0 10px 30px -12px rgba(62,230,196,0.25); }
+  .card-top { display: flex; align-items: center; gap: 12px; }
+  .icon-link {
+    width: 48px; height: 48px; border-radius: 12px; flex-shrink: 0;
+    background: #0d1220; border: 1px solid var(--border);
+    display: grid; place-items: center; font-size: 1.5rem; text-decoration: none;
+    transition: background .15s, border-color .15s;
+  }
+  .icon-link:hover, .icon-link:focus-visible { background: #15203a; border-color: var(--accent-2); outline: none; }
+  .name { font-weight: 600; font-size: 1.02rem; color: #fff; }
+  .vendor { font-family: "JetBrains Mono", monospace; font-size: 0.72rem; color: var(--muted); }
+  .desc { font-size: 0.9rem; color: var(--muted); flex: 1; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px; }
+  .badge {
+    font-family: "JetBrains Mono", monospace; font-size: 0.68rem; padding: 3px 8px; border-radius: 6px;
+    border: 1px solid var(--border); color: var(--muted); background: #0c1019;
+  }
+  .badge.dl { color: var(--accent); border-color: rgba(62,230,196,0.35); }
+  .badge.limit { color: var(--warn); border-color: rgba(255,181,71,0.35); }
+  .badge.cat { color: var(--accent-2); border-color: rgba(91,140,255,0.35); }
+  .card-foot {
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    border-top: 1px dashed var(--border); padding-top: 12px;
+  }
+  .url { font-family: "JetBrains Mono", monospace; font-size: 0.7rem; color: #4d5b72; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .go {
+    text-decoration: none; color: #04110d; background: var(--accent); font-weight: 600;
+    font-size: 0.82rem; padding: 7px 12px; border-radius: 8px; white-space: nowrap;
+  }
+  .go:hover { filter: brightness(1.1); }
+
+  .empty { display: none; text-align: center; padding: 60px 20px; color: var(--muted); border: 1px dashed var(--border); border-radius: var(--radius); }
+  .empty.show { display: block; }
+
+  /* How it works */
+  .how {
+    margin: 56px 0 24px; padding: 24px; border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .how h2 { font-size: 1rem; color: var(--accent); font-family: "JetBrains Mono", monospace; margin-bottom: 14px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .step .n { font-family: "JetBrains Mono", monospace; color: var(--accent-2); font-size: 0.8rem; }
+  .step p { color: var(--muted); font-size: 0.9rem; margin-top: 4px; }
+
+  footer {
+    border-top: 1px solid var(--border); margin-top: 40px; padding: 22px 0 36px;
+    color: var(--muted); font-size: 0.8rem; font-family: "JetBrains Mono", monospace;
+  }
+  footer p + p { margin-top: 6px; }
+
+  @media (max-width: 560px) {
+    .hero { padding-top: 36px; }
+    .status { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap topbar">
+    <div class="logo mono">INOVA<span>_AI</span> // directory</div>
+    <div class="status mono"><span class="dot"></span> <span id="indexCount">0</span> tools indexed</div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="hero">
+    <div class="prompt mono">$ ./find-tool --free --download</div>
+    <h1>Generate for free.<br><em>Download the result.</em></h1>
+    <p class="lead">A curated, domain-based index of AI tools with a free tier where you can create content and download it. Click any icon to open the tool directly.</p>
+  </section>
+
+  <div class="controls">
+    <div class="search">
+      <input id="search" type="text" placeholder="Search tools, vendors, or capabilities..." aria-label="Search tools">
+    </div>
+    <label class="toggle">
+      <input type="checkbox" id="dlOnly"> Free download only
+    </label>
+  </div>
+
+  <nav class="tabs" id="tabs" aria-label="Categories"></nav>
+
+  <div class="section-head">
+    <span id="resultLabel">// all domains</span>
+    <span id="resultCount"></span>
+  </div>
+
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty">No tools match this filter. Try clearing the search or the download toggle.</div>
+
+  <section class="how">
+    <h2>// how it works</h2>
+    <div class="steps">
+      <div class="step"><div class="n">01</div><p>Pick a domain: text, image, presentation, video, audio, or code.</p></div>
+      <div class="step"><div class="n">02</div><p>Look for the <span class="mono" style="color:var(--accent)">DOWNLOAD</span> badge to confirm you can save output on the free tier.</p></div>
+      <div class="step"><div class="n">03</div><p>Click the tool icon or <span class="mono" style="color:var(--accent)">OPEN →</span> to go straight to its site.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="wrap">
+  <p>&gt; Free tiers, credit limits and features change often. Verify terms on each provider's site before relying on a tool.</p>
+  <p>&gt; This is an independent directory. Tool names belong to their respective owners. No affiliation implied.</p>
+</footer>
+
+<script>
+  const CATEGORIES = [
+    { id: "all",   label: "All",          icon: "◈" },
+    { id: "text",  label: "Text",         icon: "✎" },
+    { id: "image", label: "Image",        icon: "◐" },
+    { id: "ppt",   label: "Presentation", icon: "▤" },
+    { id: "video", label: "Video",        icon: "▶" },
+    { id: "audio", label: "Audio & Voice",icon: "♫" },
+    { id: "code",  label: "Code",         icon: "</>" }
+  ];
+
+  // dl: free tier lets you download generated output
+  const TOOLS = [
+    // TEXT
+    { cat: "text", name: "ChatGPT", vendor: "OpenAI", icon: "🤖", url: "https://chatgpt.com", dl: true, limit: "Usage caps", desc: "General-purpose text, writing, summarization and analysis. Copy or export outputs." },
+    { cat: "text", name: "Claude", vendor: "Anthropic", icon: "✳️", url: "https://claude.ai", dl: true, limit: "Usage caps", desc: "Long-form writing, editing, research and document analysis with file uploads." },
+    { cat: "text", name: "Gemini", vendor: "Google", icon: "♊", url: "https://gemini.google.com", dl: true, limit: "Usage caps", desc: "Drafting, brainstorming and Google-connected research in one chat." },
+    { cat: "text", name: "Microsoft Copilot", vendor: "Microsoft", icon: "🪟", url: "https://copilot.microsoft.com", dl: true, limit: "Free access", desc: "Writing help and web-grounded answers, with document export options." },
+    { cat: "text", name: "Perplexity", vendor: "Perplexity AI", icon: "🔎", url: "https://www.perplexity.ai", dl: true, limit: "Daily limits", desc: "Cited, web-searched answers and quick research summaries." },
+    { cat: "text", name: "DeepL Write", vendor: "DeepL", icon: "✍️", url: "https://www.deepl.com/write", dl: false, limit: "Free basic", desc: "Grammar, tone and style improvements for short-to-medium text." },
+
+    // IMAGE
+    { cat: "image", name: "Microsoft Designer", vendor: "Microsoft", icon: "🎨", url: "https://designer.microsoft.com", dl: true, limit: "Credit based", desc: "Text-to-image generation plus social graphics you can download as PNG or JPG." },
+    { cat: "image", name: "Leonardo.Ai", vendor: "Leonardo", icon: "🖌️", url: "https://leonardo.ai", dl: true, limit: "Daily tokens", desc: "Stylized and photoreal image generation with a free daily allowance." },
+    { cat: "image", name: "Ideogram", vendor: "Ideogram", icon: "🔤", url: "https://ideogram.ai", dl: true, limit: "Daily credits", desc: "Image generation that handles legible text well, with downloads on free plan." },
+    { cat: "image", name: "Adobe Firefly", vendor: "Adobe", icon: "🔥", url: "https://firefly.adobe.com", dl: true, limit: "Monthly credits", desc: "Commercially oriented image generation and effects with a free credit allotment." },
+    { cat: "image", name: "Playground AI", vendor: "Playground", icon: "🛝", url: "https://playground.com", dl: true, limit: "Daily images", desc: "Generate and remix images with an editor, free daily generations included." },
+    { cat: "image", name: "Craiyon", vendor: "Craiyon", icon: "🖼️", url: "https://www.craiyon.com", dl: true, limit: "Free, watermarked", desc: "Fast, no-login image generation from text prompts." },
+
+    // PRESENTATION
+    { cat: "ppt", name: "Gamma", vendor: "Gamma", icon: "📊", url: "https://gamma.app", dl: true, limit: "Credit based", desc: "Prompt-to-deck presentations and documents, exportable to PPTX or PDF." },
+    { cat: "ppt", name: "Canva Presentations", vendor: "Canva", icon: "🟣", url: "https://www.canva.com/presentations/", dl: true, limit: "Free templates", desc: "Design-led slide decks with AI assist, downloadable as PDF or PPTX." },
+    { cat: "ppt", name: "Slidesgo AI", vendor: "Slidesgo", icon: "🧩", url: "https://slidesgo.com/ai-presentation-maker", dl: true, limit: "Free tier", desc: "Generate a themed slide deck from a topic and download it as PPTX." },
+    { cat: "ppt", name: "SlidesAI", vendor: "SlidesAI", icon: "🗂️", url: "https://slidesai.io", dl: false, limit: "Limited free", desc: "Turns text into Google Slides presentations inside your Drive." },
+    { cat: "ppt", name: "Beautiful.ai", vendor: "Beautiful.ai", icon: "✨", url: "https://www.beautiful.ai", dl: false, limit: "Trial only", desc: "Smart layouts that adapt as you add content. Free trial, paid export." },
+
+    // VIDEO
+    { cat: "video", name: "Luma Dream Machine", vendor: "Luma AI", icon: "🌙", url: "https://lumalabs.ai/dream-machine", dl: true, limit: "Monthly credits", desc: "Text and image to video clips with a free tier for short generations." },
+    { cat: "video", name: "Runway", vendor: "Runway", icon: "🎬", url: "https://runwayml.com", dl: true, limit: "Starter credits", desc: "Video generation and editing tools with initial free credits." },
+    { cat: "video", name: "Pika", vendor: "Pika", icon: "🎞️", url: "https://pika.art", dl: true, limit: "Daily credits", desc: "Short AI video clips from prompts or images with a free allotment." },
+    { cat: "video", name: "Canva Video", vendor: "Canva", icon: "📹", url: "https://www.canva.com/video-editor/", dl: true, limit: "Free tier", desc: "Simple AI-assisted video editing and export to MP4." },
+
+    // AUDIO
+    { cat: "audio", name: "ElevenLabs", vendor: "ElevenLabs", icon: "🔊", url: "https://elevenlabs.io", dl: true, limit: "Monthly characters", desc: "Natural text-to-speech and voice generation with downloadable MP3 output." },
+    { cat: "audio", name: "Suno", vendor: "Suno", icon: "🎵", url: "https://suno.com", dl: true, limit: "Daily credits", desc: "Generate songs from text prompts with a free daily credit allowance." },
+    { cat: "audio", name: "Udio", vendor: "Udio", icon: "🎧", url: "https://www.udio.com", dl: true, limit: "Free credits", desc: "Music generation and extension, with downloads on the free tier." },
+    { cat: "audio", name: "Murf", vendor: "Murf AI", icon: "🎙️", url: "https://murf.ai", dl: false, limit: "Free trial", desc: "Studio-style voiceovers and narration. Free tier has limited downloads." },
+
+    // CODE
+    { cat: "code", name: "Google AI Studio", vendor: "Google", icon: "⚗️", url: "https://aistudio.google.com", dl: true, limit: "Free tier", desc: "Prototype prompts and build small apps, then export the code." },
+    { cat: "code", name: "Bolt.new", vendor: "StackBlitz", icon: "⚡", url: "https://bolt.new", dl: true, limit: "Daily tokens", desc: "Generate full web apps from prompts and download the project files." },
+    { cat: "code", name: "Replit", vendor: "Replit", icon: "🔁", url: "https://replit.com", dl: true, limit: "Free plan", desc: "AI coding agent in a cloud IDE with project export." },
+    { cat: "code", name: "Windsurf", vendor: "Codeium", icon: "🌊", url: "https://windsurf.com", dl: true, limit: "Free plan", desc: "AI-native code editor with a free tier for completions and chat." }
+  ];
+
+  const state = { cat: "all", query: "", dlOnly: false };
+
+  const grid = document.getElementById("grid");
+  const tabs = document.getElementById("tabs");
+  const empty = document.getElementById("empty");
+  const search = document.getElementById("search");
+  const dlOnly = document.getElementById("dlOnly");
+
+  document.getElementById("indexCount").textContent = TOOLS.length;
+
+  function renderTabs() {
+    tabs.innerHTML = "";
+    CATEGORIES.forEach(c => {
+      const count = c.id === "all" ? TOOLS.length : TOOLS.filter(t => t.cat === c.id).length;
+      const btn = document.createElement("button");
+      btn.className = "tab" + (state.cat === c.id ? " active" : "");
+      btn.innerHTML = `${c.icon} ${c.label}<span class="count">${count}</span>`;
+      btn.setAttribute("aria-pressed", state.cat === c.id);
+      btn.onclick = () => { state.cat = c.id; render(); };
+      tabs.appendChild(btn);
+    });
+  }
+
+  function cardHTML(t) {
+    const catLabel = CATEGORIES.find(c => c.id === t.cat).label;
+    const host = new URL(t.url).hostname.replace(/^www\./, "");
+    return `
+      <article class="card">
+        <div class="card-top">
+          <a class="icon-link" href="${t.url}" target="_blank" rel="noopener noreferrer" aria-label="Open ${t.name}" title="Open ${t.name}">${t.icon}</a>
+          <div>
+            <div class="name">${t.name}</div>
+            <div class="vendor">${t.vendor}</div>
+          </div>
+        </div>
+        <p class="desc">${t.desc}</p>
+        <div class="meta">
+          <span class="badge cat">${catLabel}</span>
+          ${t.dl ? '<span class="badge dl">↓ DOWNLOAD</span>' : '<span class="badge">NO DOWNLOAD</span>'}
+          <span class="badge limit">${t.limit}</span>
+        </div>
+        <div class="card-foot">
+          <span class="url">${host}</span>
+          <a class="go" href="${t.url}" target="_blank" rel="noopener noreferrer">OPEN →</a>
+        </div>
+      </article>`;
+  }
+
+  function render() {
+    renderTabs();
+    const q = state.query.trim().toLowerCase();
+    const list = TOOLS.filter(t => {
+      if (state.cat !== "all" && t.cat !== state.cat) return false;
+      if (state.dlOnly && !t.dl) return false;
+      if (q) {
+        const hay = `${t.name} ${t.vendor} ${t.desc} ${t.cat}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+    grid.innerHTML = list.map(cardHTML).join("");
+    empty.classList.toggle("show", list.length === 0);
+    const cat = CATEGORIES.find(c => c.id === state.cat);
+    document.getElementById("resultLabel").textContent = `// ${cat.label.toLowerCase()}`;
+    document.getElementById("resultCount").textContent = `${list.length} result${list.length === 1 ? "" : "s"}`;
+  }
+
+  search.addEventListener("input", e => { state.query = e.target.value; render(); });
+  dlOnly.addEventListener("change", e => { state.dlOnly = e.target.checked; render(); });
+
+  render();
+</script>
+</body>
+</html>
